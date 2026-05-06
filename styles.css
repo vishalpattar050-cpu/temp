@@ -494,12 +494,10 @@ footer p {
     color: #FFD700;
 }
 
-/* WhatsApp Button */
-.whatsapp-btn {
+/* Social Media Buttons */
+.social-btn {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #25D366;
+    background-color: #ffffff;
     color: #ffffff;
     width: 60px;
     height: 60px;
@@ -514,9 +512,27 @@ footer p {
     z-index: 1000;
 }
 
-.whatsapp-btn:hover {
+.social-btn:hover {
     transform: scale(1.1);
     box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.whatsapp-btn {
+    bottom: 20px;
+    right: 20px;
+    background-color: #25D366;
+}
+
+.facebook-btn {
+    bottom: 90px;
+    right: 20px;
+    background-color: #1877F2;
+}
+
+.instagram-btn {
+    bottom: 160px;
+    right: 20px;
+    background-color: #E4405F;
 }
 
 /* Animations */
