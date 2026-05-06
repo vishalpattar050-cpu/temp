@@ -5,11 +5,16 @@
     box-sizing: border-box;
 }
 
+:root {
+    --header-height: 80px;
+}
+
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Manrope', sans-serif;
     line-height: 1.6;
     color: #333;
     background-color: #ffffff;
+    padding-top: var(--header-height);
 }
 
 h1, h2, h3 {
@@ -57,6 +62,10 @@ nav {
     transition: color 0.3s ease;
 }
 
+.nav-links a[aria-current="page"] {
+    color: #FFD700;
+}
+
 .nav-links a:hover {
     color: #FFD700;
 }
@@ -92,13 +101,16 @@ nav {
 /* Hero Section */
 .hero {
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://via.placeholder.com/1920x1080/000000/FFD700?text=Luxury+Jewellery') center/cover;
-    height: 100vh;
+    min-height: calc(100vh - var(--header-height));
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     color: #ffffff;
-    margin-top: 80px;
+}
+
+.page-section {
+    padding-top: 3rem;
 }
 
 .hero-content h2 {
@@ -521,6 +533,10 @@ footer p {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    :root {
+        --header-height: 120px;
+    }
+
     nav {
         flex-direction: column;
         padding: 1rem;

@@ -3,32 +3,50 @@ let cart = [];
 let cartCount = 0;
 
 // DOM Elements
-const cartIcon = document.querySelector('.cart-icon');
-const cartModal = document.getElementById('cart-modal');
-const closeCart = document.querySelector('.close-cart');
-const cartItems = document.getElementById('cart-items');
-const cartTotal = document.getElementById('cart-total');
-const cartCountElement = document.querySelector('.cart-count');
-const tabButtons = document.querySelectorAll('.tab-button');
-const productGrids = document.querySelectorAll('.product-grid');
-const addToCartButtons = document.querySelectorAll('.add-to-cart');
+let cartIcon;
+let cartModal;
+let closeCart;
+let cartItems;
+let cartTotal;
+let cartCountElement;
+let tabButtons;
+let productGrids;
+let addToCartButtons;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
+    cacheDom();
     setupEventListeners();
     updateCartDisplay();
+    setupScrollAnimations();
+    setupHeroEffects();
 });
+
+// Cache DOM Elements
+function cacheDom() {
+    cartIcon = document.querySelector('.cart-icon');
+    cartModal = document.getElementById('cart-modal');
+    closeCart = document.querySelector('.close-cart');
+    cartItems = document.getElementById('cart-items');
+    cartTotal = document.getElementById('cart-total');
+    cartCountElement = document.querySelector('.cart-count');
+    tabButtons = document.querySelectorAll('.tab-button');
+    productGrids = document.querySelectorAll('.product-grid');
+    addToCartButtons = document.querySelectorAll('.add-to-cart');
+}
 
 // Setup Event Listeners
 function setupEventListeners() {
     // Cart modal
-    cartIcon.addEventListener('click', openCart);
-    closeCart.addEventListener('click', closeCartModal);
-    window.addEventListener('click', (e) => {
-        if (e.target === cartModal) {
-            closeCartModal();
-        }
-    });
+    if (cartIcon && closeCart && cartModal) {
+        cartIcon.addEventListener('click', openCart);
+        closeCart.addEventListener('click', closeCartModal);
+        window.addEventListener('click', (e) => {
+            if (e.target === cartModal) {
+                closeCartModal();
+            }
+        });
+    }
 
     // Collection tabs
     tabButtons.forEach(button => {
@@ -40,7 +58,7 @@ function setupEventListeners() {
         button.addEventListener('click', addToCart);
     });
 
-    // Smooth scrolling for nav links
+    // Smooth scrolling for in-page links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -53,6 +71,13 @@ function setupEventListeners() {
             }
         });
     });
+
+    const checkoutButton = document.querySelector('.checkout-btn');
+    if (checkoutButton) {
+        checkoutButton.addEventListener('click', () => {
+            alert('Checkout functionality would be implemented here with payment integration.');
+        });
+    }
 }
 
 // Collection switching
@@ -65,7 +90,10 @@ function switchCollection(e) {
 
     // Update product grids
     productGrids.forEach(grid => grid.classList.remove('active'));
-    document.getElementById(`${collection}-collection`).classList.add('active');
+    const activeGrid = document.getElementById(`${collection}-collection`);
+    if (activeGrid) {
+        activeGrid.classList.add('active');
+    }
 }
 
 // Add to cart functionality
@@ -106,6 +134,10 @@ function showAddToCartAnimation(button) {
 
 // Update cart display
 function updateCartDisplay() {
+    if (!cartCountElement || !cartItems || !cartTotal) {
+        return;
+    }
+
     cartCountElement.textContent = cartCount;
     cartItems.innerHTML = '';
 
@@ -151,61 +183,77 @@ function removeFromCart(e) {
 
 // Open cart modal
 function openCart() {
+    if (!cartModal) {
+        return;
+    }
     cartModal.style.display = 'block';
     document.body.style.overflow = 'hidden';
 }
 
 // Close cart modal
 function closeCartModal() {
+    if (!cartModal) {
+        return;
+    }
     cartModal.style.display = 'none';
     document.body.style.overflow = 'auto';
 }
-
 // Smooth scroll animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
+function setupScrollAnimations() {
+    const animatedElements = document.querySelectorAll('.product-card, .review-card, .stat');
+    if (animatedElements.length === 0 || !('IntersectionObserver' in window)) {
+        return;
+    }
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    animatedElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
     });
-}, observerOptions);
+}
 
-// Observe elements for animation
-document.querySelectorAll('.product-card, .review-card, .stat').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-});
+// Hero effects
+function setupHeroEffects() {
+    const heroTitle = document.querySelector('.hero-content h2');
+    const heroText = document.querySelector('.hero-content p');
+    const heroCta = document.querySelector('.cta-button');
 
-// Hero text animation
-document.querySelector('.hero-content h2').style.animation = 'fadeInUp 1s ease-out';
-document.querySelector('.hero-content p').style.animation = 'fadeInUp 1s ease-out 0.3s both';
-document.querySelector('.cta-button').style.animation = 'fadeInUp 1s ease-out 0.6s both';
+    if (heroTitle) {
+        heroTitle.style.animation = 'fadeInUp 1s ease-out';
+    }
+    if (heroText) {
+        heroText.style.animation = 'fadeInUp 1s ease-out 0.3s both';
+    }
+    if (heroCta) {
+        heroCta.style.animation = 'fadeInUp 1s ease-out 0.6s both';
+    }
 
-// Parallax effect for hero (subtle)
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
     const hero = document.querySelector('.hero');
     if (hero) {
-        hero.style.backgroundPositionY = -(scrolled * 0.5) + 'px';
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            hero.style.backgroundPositionY = -(scrolled * 0.5) + 'px';
+        });
     }
-});
+}
 
 // Mobile menu toggle (if needed in future)
 function toggleMobileMenu() {
     const navLinks = document.querySelector('.nav-links');
     navLinks.classList.toggle('active');
 }
-
-// Checkout functionality (placeholder)
-document.querySelector('.checkout-btn').addEventListener('click', () => {
-    alert('Checkout functionality would be implemented here with payment integration.');
-    // In a real application, this would redirect to a checkout page or open a payment modal
-});
